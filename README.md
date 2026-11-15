@@ -57,6 +57,15 @@ python -m attractiveness.predict --model models\scut.joblib --save-aligned align
 `evaluate` without `--train-list`/`--test-list` runs k-fold cross-validation, which is what to use on personal ratings
 (an `image,score` CSV). Add `--reference-model models\scut.joblib` to see how well the SCUT model agrees with them.
 
+### Rating photos yourself
+
+```powershell
+python -m personal_ratings.rate_photos --images C:\dev\fbp_data\photofeeler_images --output C:\dev\fbp_data\personal_ratings.csv
+```
+
+Shows the photos one by one; rate the face on a 1-10 scale with keys 1-9 and 0 (= 10), S skips, B goes back, Q quits.
+Progress is saved after every photo, so rating can be resumed at any time. Use the whole scale.
+
 ### Capturing Photofeeler votes
 
 ```powershell

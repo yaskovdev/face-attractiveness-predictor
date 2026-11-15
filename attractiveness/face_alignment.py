@@ -15,7 +15,8 @@ YUNET_PATH = Path(__file__).resolve().parent.parent / "pretrained" / "face_detec
 ALIGNED_SIZE = 256
 
 # Canonical positions of the right eye, left eye, nose tip, right and left mouth corners (the order YuNet uses) on the
-# well-known 112x112 ArcFace template. They are rescaled so that the crop also includes the forehead, hair and chin.
+# well-known 112x112 ArcFace template. They are rescaled so that the crop spans from the forehead to the chin: a looser
+# crop would mostly add padding to the tightly cropped SCUT-FBP5500 photos but real background to everyday photos.
 _ARCFACE_TEMPLATE = np.array([
     [38.2946, 51.6963],
     [73.5318, 51.5014],
@@ -23,8 +24,8 @@ _ARCFACE_TEMPLATE = np.array([
     [41.5493, 92.3655],
     [70.7299, 92.2041],
 ], dtype=np.float32)
-_FACE_SCALE = 0.55
-_FACE_CENTER_Y = 0.55
+_FACE_SCALE = 0.85
+_FACE_CENTER_Y = 0.52
 
 
 def _template(size):
@@ -62,7 +63,7 @@ class FaceAligner:
         matrix, _ = cv2.estimateAffinePartial2D(landmarks.astype(np.float32), self._template, method=cv2.LMEDS)
         if matrix is None:
             return None
-        return cv2.warpAffine(image, matrix, (self._size, self._size), flags=cv2.INTER_AREA, borderMode=cv2.BORDER_REPLICATE)
+        return cv2.warpAffine(image, matrix, (self._size, self._size), flags=cv2.INTER_AREA, borderMode=cv2.BORDER_CONSTANT, borderValue=(127, 127, 127))
 
 
 def read_image(path):
