@@ -1,6 +1,6 @@
 """Trains the final ridge regression on all rated faces and saves it.
 
-Example: python -m attractiveness.train_model --features features\\scut_clip_vit_l14.npz --ratings <SCUT>\\train_test_files\\All_labels.txt --output models\\scut.joblib
+Example: python -m attractiveness.train_model --features features\\scut_clip_vit_l14.npz --ratings <SCUT>\\train_test_files\\All_labels.txt --output models\\scut_clip_vit_l14.joblib
 """
 import argparse
 from pathlib import Path

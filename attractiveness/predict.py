@@ -1,6 +1,6 @@
 """Predicts the attractiveness score of the largest face on each given photo.
 
-Example: python -m attractiveness.predict --model models\\scut.joblib photo1.jpg photo2.jpg --save-aligned aligned_output
+Example: python -m attractiveness.predict --model models\\scut_clip_vit_l14.joblib photo1.jpg photo2.jpg --save-aligned aligned_output
 The aligned crops show exactly what the model sees; check them if a score looks suspicious.
 """
 import argparse

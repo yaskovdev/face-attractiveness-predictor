@@ -5,7 +5,7 @@ SCUT-FBP5500, the official 60/40 split:
       --train-list "<SCUT>\\train_test_files\\split_of_60%training and 40%testing\\train.txt"
       --test-list "<SCUT>\\train_test_files\\split_of_60%training and 40%testing\\test.txt"
 Personal ratings, cross-validation, plus how well an already trained (e.g. SCUT) model agrees with them:
-  python -m attractiveness.evaluate --features features\\personal_clip_vit_l14.npz --ratings personal_ratings.csv --reference-model models\\scut.joblib
+  python -m attractiveness.evaluate --features features\\personal_clip_vit_l14.npz --ratings personal_ratings.csv --reference-model models\\scut_clip_vit_l14.joblib
 """
 import argparse
 from pathlib import Path

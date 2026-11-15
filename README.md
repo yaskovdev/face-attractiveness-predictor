@@ -26,6 +26,17 @@ six large CNNs, and its predictions on real photos often disagreed with my own j
 
 Photos and ratings are kept outside the repository and must never be committed.
 
+## Results on SCUT-FBP5500 (official 60/40 split, 2200 test faces)
+
+| Features                      | Pearson | MAE    | RMSE   |
+|-------------------------------|---------|--------|--------|
+| CLIP ViT-L/14                 | 0.9417  | 0.1777 | 0.2283 |
+| DINOv2 ViT-L/14               | 0.8912  | 0.2386 | 0.3080 |
+| CLIP ViT-L/14 + DINOv2        | 0.9446  | 0.1721 | 0.2227 |
+
+CLIP alone is used by default: the concatenation is barely better but twice as slow. Training the ridge regression takes
+seconds; extracting the features of all 5500 faces takes about a minute on an RTX 3080 Ti.
+
 ## Setup (Windows, NVIDIA GPU)
 
 ```powershell
@@ -50,12 +61,12 @@ $split = "$scut\train_test_files\split_of_60%training and 40%testing"
 python -m attractiveness.evaluate --features features\scut_clip_vit_l14.npz --ratings "$scut\train_test_files\All_labels.txt" --train-list "$split\train.txt" --test-list "$split\test.txt"
 
 # 4. Train the final model on all faces and score your own photos
-python -m attractiveness.train_model --features features\scut_clip_vit_l14.npz --ratings "$scut\train_test_files\All_labels.txt" --output models\scut.joblib
-python -m attractiveness.predict --model models\scut.joblib --save-aligned aligned_output photo.jpg
+python -m attractiveness.train_model --features features\scut_clip_vit_l14.npz --ratings "$scut\train_test_files\All_labels.txt" --output models\scut_clip_vit_l14.joblib
+python -m attractiveness.predict --model models\scut_clip_vit_l14.joblib --save-aligned aligned_output photo.jpg
 ```
 
 `evaluate` without `--train-list`/`--test-list` runs k-fold cross-validation, which is what to use on personal ratings
-(an `image,score` CSV). Add `--reference-model models\scut.joblib` to see how well the SCUT model agrees with them.
+(an `image,score` CSV). Add `--reference-model models\scut_clip_vit_l14.joblib` to see how well the SCUT model agrees with them.
 
 ### Rating photos yourself
 
