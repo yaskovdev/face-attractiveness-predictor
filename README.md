@@ -37,6 +37,19 @@ Photos and ratings are kept outside the repository and must never be committed.
 CLIP alone is used by default: the concatenation is barely better but twice as slow. Training the ridge regression takes
 seconds; extracting the features of all 5500 faces takes about a minute on an RTX 3080 Ti.
 
+## Results on my own ratings (314 Photofeeler faces, 1-10 scale, 10-fold cross-validation)
+
+| Model                                                     | Pearson |
+|-----------------------------------------------------------|---------|
+| SCUT-FBP5500 model as is                                  | 0.53    |
+| Personal ridge regression on CLIP ViT-L/14                | 0.645   |
+| Personal ridge regression on DINOv2 ViT-L/14              | 0.38    |
+| SCUT prediction blended with the personal model (stacked) | 0.65    |
+
+The average SCUT rater agrees with me only partially; a model trained on my own ratings does noticeably better. The
+learning curve flattens (Pearson 0.61 with 150 training faces, 0.63 with 250), so the remaining gap is probably mostly
+the noise of my own ratings, which `rate_photos --rerate-from` measures.
+
 ## Setup (Windows, NVIDIA GPU)
 
 ```powershell
@@ -76,6 +89,13 @@ python -m personal_ratings.rate_photos --images C:\dev\fbp_data\photofeeler_imag
 
 Shows the photos one by one; rate the face on a 1-10 scale with keys 1-9 and 0 (= 10), S skips, B goes back, Q quits.
 Progress is saved after every photo, so rating can be resumed at any time. Use the whole scale.
+
+To measure how consistent your ratings are, re-rate some of the photos later, blindly and in a different order; the
+correlation between the two sessions is the upper bound of what any model can achieve:
+
+```powershell
+python -m personal_ratings.rate_photos --images C:\dev\fbp_data\photofeeler_images --output C:\dev\fbp_data\personal_ratings_rerated.csv --rerate-from C:\dev\fbp_data\personal_ratings.csv --limit 60
+```
 
 ### Capturing Photofeeler votes
 

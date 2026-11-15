@@ -51,10 +51,18 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--images", required=True, type=Path)
     parser.add_argument("--output", required=True, type=Path)
+    parser.add_argument("--rerate-from", type=Path,
+                        help="Re-rate photos already rated in this CSV (blindly, in a different order) to measure how consistent your ratings are")
+    parser.add_argument("--limit", type=int, default=60, help="How many photos to re-rate, used with --rerate-from")
     args = parser.parse_args()
 
     paths = sorted(path for path in args.images.iterdir() if path.suffix.lower() in IMAGE_EXTENSIONS)
     random.Random(42).shuffle(paths)
+    if args.rerate_from:
+        original = _load(args.rerate_from)
+        paths = [path for path in paths if original.get(path.name, {}).get("score")]
+        random.Random(7).shuffle(paths)
+        paths = paths[:args.limit]
     ratings = _load(args.output)
     history = []
     position = next((i for i, path in enumerate(paths) if path.name not in ratings), len(paths))
@@ -88,6 +96,13 @@ def main():
         position = next((i for i in range(position + 1, len(paths)) if paths[i].name not in ratings), len(paths))
     cv2.destroyAllWindows()
     print(f"{sum(1 for row in ratings.values() if row['score'])} photos rated, saved to {args.output}")
+    if args.rerate_from:
+        pairs = [(float(original[name]["score"]), float(row["score"])) for name, row in ratings.items()
+                 if row["score"] and original.get(name, {}).get("score")]
+        if len(pairs) >= 3:
+            first, second = np.array(pairs).T
+            print(f"Consistency over {len(pairs)} photos: Pearson {np.corrcoef(first, second)[0, 1]:.3f}, "
+                  f"mean absolute difference {np.mean(np.abs(first - second)):.2f}")
 
 
 if __name__ == "__main__":
