@@ -81,6 +81,19 @@ python -m attractiveness.predict --model models\scut_clip_vit_l14.joblib --save-
 `evaluate` without `--train-list`/`--test-list` runs k-fold cross-validation, which is what to use on personal ratings
 (an `image,score` CSV). Add `--reference-model models\scut_clip_vit_l14.joblib` to see how well the SCUT model agrees with them.
 
+The personal model is trained the same way, on the features of the photos you rated:
+
+```powershell
+python -m attractiveness.align_images --input C:\dev\fbp_data\photofeeler_images --output C:\dev\fbp_data\aligned\photofeeler
+python -m attractiveness.extract_features --images C:\dev\fbp_data\aligned\photofeeler --backbone clip_vit_l14 --output features\photofeeler_clip_vit_l14.npz
+python -m attractiveness.train_model --features features\photofeeler_clip_vit_l14.npz --ratings C:\dev\fbp_data\personal_ratings.csv --output models\personal_clip_vit_l14.joblib
+python -m attractiveness.predict --model models\personal_clip_vit_l14.joblib --save-aligned aligned_output photo1.jpg photo2.jpg
+```
+
+Score photos the model was not trained on; the scores of the rated photos are optimistic. Ridge regression shrinks
+predictions towards the average, so they span a narrower range than the ratings themselves; compare them relative to
+each other.
+
 ### Rating photos yourself
 
 ```powershell
