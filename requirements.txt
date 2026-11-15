@@ -1,0 +1,9 @@
+# PyTorch with CUDA is installed separately, see README.md
+opencv-python>=4.8
+numpy
+scikit-learn
+joblib
+tqdm
+open_clip_torch
+timm
+mitmproxy

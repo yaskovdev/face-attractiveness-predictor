@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# IDE
+.idea/
+.vscode/
+
+# Downloaded pretrained weights, computed features, trained models
+pretrained/
+features/
+models/
+*.npz
+*.joblib
+*.pt
+*.onnx
+
+# Face photos and ratings must never be committed: they are photos of real people
+captured_images/
+captured_events.jsonl
+aligned_output/
+*.jpg
+*.jpeg
+*.png
+*.webp
+*.csv
+*.zip
